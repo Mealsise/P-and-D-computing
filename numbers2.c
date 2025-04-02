@@ -86,6 +86,24 @@ where n is the number of ranks
 */
 
 
+int pack_data(bool any_out_of_order, int n_out_of_order)
+{
+    int data;
+    data = n_out_of_order << 1;
+    data += any_out_of_order ? 1 : 0;
+
+    return data;
+}
+
+bool unpack_data_any(int data)
+{
+    return data % 2;
+}
+
+int unpack_data_n(int data)
+{
+    return data >> 1;
+}
 
 
 void print_message(int rank, bool any_out_of_order, int n_out_of_order)
@@ -133,33 +151,6 @@ int main(void)
             print_message_from_data(rank, data);
         }
     }
-    
-
-
-
-    // if (my_rank == MASTER_RANK)
-    // {
-    //     // print own
-    //     print_message(my_rank, self_any_out_of_order, self_any_out_of_order);
-        
-    //     for (int sender_rank = 1; sender_rank <= world_size; sender_rank++) {
-    //         int n_out_of_order;
-    //         bool any_out_of_order;
-
-    //         // receive message from sender_rank
-
-    //         // print message on behalf of sender
-    //         print_message(sender_rank, any_out_of_order, n_out_of_order);
-    //     }
-    // }
-    // else if (my_rank != MASTER_RANK)
-    // {
-    //     // send self_n_out_of_order
-    //     // receive self_any_out_of_order
-    // }
-
-
-    // Finalize MPI
 
 
 
