@@ -118,28 +118,45 @@ int main(void)
 
 
 
-
-
-    if (my_rank == MASTER_RANK)
+    /* 
+    chinese_whisper makes it so that i can tell every rank:
+    "Hey a message needs to get from A to B"
+    and then if that rank is involved in that chain it will grab from the right and give to left
+    else it will just do nothing.
+    */
+    for (int rank = 0; rank <= world_size; rank++)
     {
-        // print own
-        print_message(my_rank, self_any_out_of_order, self_any_out_of_order);
+        int data = chinese_whisper(my_rank, rank, MASTER_RANK, world_size, my_data);
         
-        for (int sender_rank = 1; sender_rank <= world_size; sender_rank++) {
-            int n_out_of_order;
-            bool any_out_of_order;
-
-            // receive message from sender_rank
-
-            // print message on behalf of sender
-            print_message(sender_rank, any_out_of_order, n_out_of_order);
+        if (my_rank == MASTER_RANK)
+        {
+            print_message_from_data(rank, data);
         }
     }
-    else if (my_rank != MASTER_RANK)
-    {
-        // send self_n_out_of_order
-        // receive self_any_out_of_order
-    }
+    
+
+
+
+    // if (my_rank == MASTER_RANK)
+    // {
+    //     // print own
+    //     print_message(my_rank, self_any_out_of_order, self_any_out_of_order);
+        
+    //     for (int sender_rank = 1; sender_rank <= world_size; sender_rank++) {
+    //         int n_out_of_order;
+    //         bool any_out_of_order;
+
+    //         // receive message from sender_rank
+
+    //         // print message on behalf of sender
+    //         print_message(sender_rank, any_out_of_order, n_out_of_order);
+    //     }
+    // }
+    // else if (my_rank != MASTER_RANK)
+    // {
+    //     // send self_n_out_of_order
+    //     // receive self_any_out_of_order
+    // }
 
 
     // Finalize MPI
