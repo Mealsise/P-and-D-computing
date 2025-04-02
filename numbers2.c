@@ -3,6 +3,71 @@
 int MASTER_RANK = 0;
 
 
+
+
+
+
+// inline function to get the rank of a ranks left neighbour
+inline int get_left__neighbour(int my_rank, int num_ranks) {
+    return (my_rank - 1) % num_ranks;
+}
+
+// inline function to get the rank of a ranks right neighbour
+inline int get_right_neighbour(int my_rank, int num_ranks) {
+    return (my_rank + 1) % num_ranks;
+}
+
+
+
+
+
+
+
+
+int chinese_whisper(int my_rank, int source_rank, int target_rank, int num_ranks, int data = 0)
+{
+    // Error catching for invalid path
+    if (source_rank < target_rank) 
+//! EARLY RETURN
+        return chinese_whisper(my_rank, target_rank, source_rank, num_ranks, data);
+
+    // Check and exit if this rank
+    bool is_rank__left = my_rank < target_rank;
+    bool is_rank_right = my_rank > source_rank;
+    
+    if (is_rank__left || is_rank_right)
+//! EARLY RETURN
+        return data;
+
+    // If sending 0 distance
+    if (source_rank == target_rank)
+//! EARLY RETURN
+        return data;
+
+    int new_data = data;
+    
+    bool is_rank___sender = my_rank > target_rank;
+    bool is_rank_receiver = my_rank < source_rank;
+
+    if (is_rank___sender)
+    {
+        int left__neighbour = get_left__neighbour(my_rank, num_ranks);
+        // send data to left__neighbour
+    }
+
+    if (is_rank_receiver)
+    {
+        int right_neighbour = get_right_neighbour(my_rank, num_ranks);
+        // receive from right_neighbour
+    }
+
+//! ACTUAL RETURN
+    return new_data;
+}
+
+
+
+
 /*
 Need to redo
 
