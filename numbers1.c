@@ -21,6 +21,10 @@ int main(void) {
     MPI_Comm_size(MPI_COMM_WORLD, &num_ranks);
 
     // Input
+//TODO Change over from FAKE INPUT
+    int values[6] = {5, 7, 9, 1, 13, 14}; // Hard coded to only be 6 as my pc can only run upto 6 processes `mpirun -np 6 ./numbers1`
+    int my_value = values[my_rank];
+    printf("Rank %d: My number is %d\n", my_rank, my_value);
 
     // Check
     bool correct = false;
