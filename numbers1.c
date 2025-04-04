@@ -4,38 +4,49 @@
 #include <mpi.h>
 
 // inline function to get the rank of a ranks left neighbour
-inline int neighbour_left(int my_rank, int num_ranks) {
+static inline int get_left_rank(int my_rank, int num_ranks) {
     return (my_rank - 1) % num_ranks;
 }
 
 // inline function to get the rank of a ranks right neighbour
-inline int neighbour_right(int my_rank, int num_ranks) {
+static inline int get_right_rank(int my_rank, int num_ranks) {
     return (my_rank + 1) % num_ranks;
 }
 
-bool check_rank(int my_value, int my_rank, int num_ranks) {
-    if (my_rank == 0)
-    {
-        // Send right
-        return true;
-    }
-    else if (my_rank == num_ranks - 1)
-    {
-        int right = my_value;
-        int left;
-        // Receive left
-        return left < right;
-    }
-    else
-    {
-        int right = my_value;
-        int left;
-        // Receive left
-        // Send right
-        return left < right;
-    }
+static inline void send_right(int my_value, int my_rank, int num_ranks)
+{
+    int right_rank = get_right_rank(my_rank, num_ranks);
+    MPI_Send(&my_value, 1, MPI_INT, right_rank, 0, MPI_COMM_WORLD);
 }
 
+static inline int receive_left(int my_rank, int num_ranks)
+{
+    int left_value;
+    int left_rank = get_left_rank(my_rank, num_ranks);
+    MPI_Recv(&left_value, 1, MPI_INT, left_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    return left_value;
+}
+
+
+bool is_in_order(int my_value, int my_rank, int num_ranks) {
+    // send right unless last
+    if (my_rank != num_ranks - 1)
+    {
+        send_right(my_value, my_rank, num_ranks);
+    }
+
+    // Rank 0 has no left neighbour and thus has no need to check
+    //   Thus defaults to passing
+    if (my_rank == 0)
+    {
+        return true;
+    }
+
+    // grab from the left and compare
+    int left_value = receive_left(my_rank, num_ranks);
+    return left_value < my_value; // true = in order
+}
+    
 
 int main(void) {
     // Initialize
@@ -53,12 +64,11 @@ int main(void) {
     printf("Rank %d: My number is %d\n", my_rank, my_value);    //! Temporary
 
     // Check
-    bool correct = check_rank(my_value, my_rank, num_ranks);
-    if (correct)
+    if (!is_in_order(my_value, my_rank, num_ranks))
     {
-        printf("Process %d has now finished.\n", my_rank);
+        printf("Process %d has at least one number out of order.\n", my_rank);
     }
-    printf("Process %d has at least one number out of order.\n", my_rank);
+    printf("Process %d has now finished.\n", my_rank);
 
     // Finalize
     MPI_Finalize();
