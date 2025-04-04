@@ -26,9 +26,9 @@ int main(void) {
     bool correct = false;
     if (correct)
     {
-        printf("Process <rank> has at least one number out of order.");
+        printf("Process %d has at least one number out of order.\n", my_rank);
     }
-    printf("Process <rank> has now finished.");
+    printf("Process %d has now finished.\n", my_rank);
 
     // Finalize
     MPI_Finalize();
