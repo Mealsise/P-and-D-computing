@@ -24,7 +24,7 @@ inline int get_right_neighbour(int my_rank, int num_ranks) {
 
 
 
-int chinese_whisper(int my_rank, int source_rank, int target_rank, int num_ranks, int data = 0)
+int chinese_whisper(int my_rank, int source_rank, int target_rank, int num_ranks, int data)
 {
     // Error catching for invalid path
     if (source_rank < target_rank) 
@@ -133,6 +133,8 @@ int main(void)
     // check self
     int self_n_out_of_order;
     bool self_any_out_of_order;
+
+    int my_data;
 
 
 
