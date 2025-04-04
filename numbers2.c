@@ -1,21 +1,51 @@
 #include <stdbool.h>
+#include <stdio.h>
+#include <mpi.h>
 
 int MASTER_RANK = 0;
 
+typedef enum {
+    LEFT = -1,
+    RIGHT = 1
+} Direction;
 
-
-
-
-
-// inline function to get the rank of a ranks left neighbour
-inline int get_left__neighbour(int my_rank, int num_ranks) {
-    return (my_rank - 1) % num_ranks;
+static inline int get_neighbour_rank(int my_rank, int num_ranks, Direction direction)
+{
+    return (my_rank + direction) % num_ranks;
 }
 
-// inline function to get the rank of a ranks right neighbour
-inline int get_right_neighbour(int my_rank, int num_ranks) {
-    return (my_rank + 1) % num_ranks;
+static inline void send(int my_value, int my_rank, int num_ranks, Direction direction)
+{
+    int address_rank = get_neighbour_rank(my_rank, num_ranks, direction);
+    MPI_Send(&my_value, 1, MPI_INT, address_rank, 0, MPI_COMM_WORLD);
 }
+
+
+static inline int receive(int my_rank, int num_ranks, Direction direction)
+{
+    int received_value;
+    int address_rank = get_neighbour_rank(my_rank, num_ranks, direction);
+    MPI_Recv(&received_value, 1, MPI_INT, address_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    return received_value;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
