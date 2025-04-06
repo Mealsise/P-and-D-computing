@@ -1,3 +1,17 @@
+/*
+ * Tyler Roe-Smith
+ * Student ID: a1899603
+ *
+ * Assignment 1 Milestone – numbers1.c
+ *
+ * This program implements a ring-based MPI communication pattern with five processes.
+ * Each process holds a number and compares it to its left neighbour's number.
+ * If the value is out of order (less than the left neighbour), a message is printed.
+ * 
+ * Only immediate left and right neighbour communication is allowed.
+ * This milestone version uses hardcoded input for testing and demonstrates basic
+ * inter-process communication using point-to-point MPI functions.
+ */
 
 #include <stdbool.h>
 #include <stdio.h>
